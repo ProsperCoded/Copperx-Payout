@@ -8,14 +8,10 @@ import { TelegramService } from "../utils/telegram/telegram.service";
 import { UnknownCommandMessage } from "./messages";
 import { callbackOperations } from "./operations/callback.operations";
 const logger = new LoggerService(LoggerPaths.WEBHOOK);
-export const handler: RequestHandler = (req, _res) => {
-  if (!req.body || !req.body.message) {
-    throw new InvalidRequestException("Invalid request body");
-  }
-
+export const handler: RequestHandler = (req, res) => {
   // callback button clicked
-  const callbackQuery = (req.body as TelegramBody).callback_query;
-  if (callbackQuery) {
+  if (req.body?.callback_query) {
+    const callbackQuery = (req.body as TelegramBody).callback_query;
     let command = callbackQuery.data.toLowerCase();
     logger.info("Received command from callback query", command);
     if (!(command in callbackOperations)) {
@@ -23,22 +19,23 @@ export const handler: RequestHandler = (req, _res) => {
       throw new InvalidRequestException("Unknown command");
     }
     callbackOperations[command](callbackQuery.message);
-  }
+  } else if (
+    req.body?.message &&
+    req.body.message.text &&
+    req.body.message.text.startsWith("/")
+  ) {
+    // direct message | group message | channel message
+    const message = (req.body as TelegramBody).message;
 
-  // direct message | group message | channel message
-  const message = req.body.message as TelegramMessage;
-
-  if (!message.text) {
-    throw new InvalidRequestException("No text property");
+    let command = message.text.substring(1).toLowerCase();
+    logger.info("Received command", command);
+    if (!(command in commandOperations)) {
+      TelegramService.sendMessage(message.chat.id, UnknownCommandMessage);
+      throw new InvalidRequestException("Unknown command");
+    }
+    commandOperations[command](message);
+  } else {
+    throw new InvalidRequestException("Invalid request body");
   }
-  let command = message.text.substring(1).toLowerCase();
-  logger.info("Received command", command);
-  if (!(command in commandOperations)) {
-    TelegramService.sendMessage(message.chat.id, UnknownCommandMessage);
-    throw new InvalidRequestException("Unknown command");
-  }
-  commandOperations[command](message);
-
-  logger.info("Received message:", message);
-  _res.status(200).send("OK");
+  res.status(200).send("OK");
 };

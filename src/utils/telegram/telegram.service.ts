@@ -2,10 +2,11 @@ import axios from "axios";
 import { configService } from "../config";
 import { ENV } from "../../constants/env.enum";
 import { TELEGRAM_API_URL } from "../../constants";
+import { CallbackEnum } from "../../constants/callback.enum";
 
 export type InlineKeyboardButton = {
   text: string;
-  callback_data: string;
+  callback_data: CallbackEnum;
 };
 
 export type ReplyKeyboardButton = {
