@@ -6,7 +6,7 @@ import { CallbackEnum } from "../../constants/callback.enum";
 
 export type InlineKeyboardButton = {
   text: string;
-  callback_data: CallbackEnum;
+  callback_data: string;
 };
 
 export type ReplyKeyboardButton = {

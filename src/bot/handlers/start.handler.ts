@@ -3,7 +3,7 @@ import { TelegramMessage } from "../../types/webhook.types";
 import { TelegramService } from "../../utils/telegram/telegram.service";
 import { welcomeMessage } from "../messages/start.messages";
 
-export async function handleStart(msgObj: TelegramMessage) {
+export async function startHandler(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
   await TelegramService.sendMessage(chatId, welcomeMessage, {
     inlineKeyboard: [
