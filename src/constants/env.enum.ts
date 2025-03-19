@@ -1,5 +1,5 @@
 export enum ENV {
-  TOKEN = "TOKEN",
+  BOT_TOKEN = "BOT_TOKEN",
   SERVER_URL = "WEBHOOK_URL",
   PORT = "PORT",
   NODE_ENV = "NODE_ENV",

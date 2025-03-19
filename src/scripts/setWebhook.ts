@@ -1,8 +1,10 @@
 import "dotenv/config";
 import axios from "axios";
-import { configService } from "./utils/config";
-import { ENV } from "./constants/env.enum";
-const botToken = configService.get(ENV.TOKEN);
+import { configService } from "../utils/config";
+import { ENV } from "../constants/env.enum";
+
+// ** Set the webhook for the telegram bot
+const botToken = configService.get(ENV.BOT_TOKEN);
 const webhookUrl = configService.get(ENV.SERVER_URL) + "/webhook";
 
 axios(`https://api.telegram.org/bot${botToken}/setWebhook?url=${webhookUrl}`, {
@@ -12,8 +14,8 @@ axios(`https://api.telegram.org/bot${botToken}/setWebhook?url=${webhookUrl}`, {
   },
 })
   .then(function (response) {
-    console.log(JSON.stringify(response.data));
+    console.log("Webhook set successfully:", JSON.stringify(response.data));
   })
   .catch(function (error) {
-    console.log(error);
+    console.error("Error setting webhook:", error);
   });
