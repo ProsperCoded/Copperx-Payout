@@ -1,8 +1,7 @@
 import { RequestHandler } from "express";
 import { InvalidRequestException } from "../utils/exceptions/invalid-request.exception";
 import { TelegramMessage } from "../types/webhook.types";
-import { commandOperations } from "./botOperations";
-const CommandHandlers = [];
+import { commandOperations } from "./commandOperations";
 export const handler: RequestHandler = (req, _res) => {
   if (!req.body || !req.body.message) {
     throw new InvalidRequestException("Invalid request body");
