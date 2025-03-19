@@ -1,6 +1,6 @@
-import { CommandsEnum } from "../constants/bot-commands";
-import { TelegramMessage } from "../types/webhook.types";
-import { handleStart } from "./handlers/start.handler";
+import { CommandsEnum } from "../../constants/bot-commands";
+import { TelegramMessage } from "../../types/webhook.types";
+import { handleStart } from "./../handlers/start.handler";
 
 export const commandOperations: {
   [key in CommandsEnum]: (msgObj: TelegramMessage) => void;

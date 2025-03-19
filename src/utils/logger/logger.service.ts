@@ -5,8 +5,10 @@ import pino from "pino";
 import { ENV } from "../../constants/env.enum";
 import fs from "fs";
 import path from "path";
+
 export class LoggerService implements ILogger {
   private logger: pino.Logger;
+
   constructor(private loggerPath: LoggerPaths) {
     // * create log files & folders
     const label =
@@ -54,17 +56,41 @@ export class LoggerService implements ILogger {
     );
   }
 
-  info(message: string, ...args: any[]): void {
-    this.logger.info(message, ...args);
+  /**
+   * Private helper method to handle logging with consistent format
+   * @param level The log level (info, debug, error, warn)
+   * @param message The primary message to log
+   * @param args Additional arguments to include in the log
+   */
+  private log(
+    level: "info" | "debug" | "error" | "warn",
+    message: string,
+    ...args: any[]
+  ): void {
+    if (args.length === 0) {
+      this.logger[level](message);
+    } else if (args.length === 1 && typeof args[0] === "object") {
+      // If a single object is provided, merge it with the message
+      this.logger[level]({ msg: message, ...args[0] });
+    } else {
+      // Handle multiple arguments or non-object arguments
+      this.logger[level]({ msg: message, data: args });
+    }
   }
+
+  info(message: string, ...args: any[]): void {
+    this.log("info", message, ...args);
+  }
+
   debug(message: string, ...args: any[]): void {
-    this.logger.debug(message, ...args);
+    this.log("debug", message, ...args);
   }
 
   error(message: string, ...args: any[]): void {
-    this.logger.error(message, ...args);
+    this.log("error", message, ...args);
   }
+
   warn(message: string, ...args: any[]): void {
-    this.logger.warn(message, ...args);
+    this.log("warn", message, ...args);
   }
 }

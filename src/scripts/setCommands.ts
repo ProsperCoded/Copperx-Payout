@@ -20,5 +20,5 @@ axios(`https://api.telegram.org/bot${botToken}/setMyCommands`, {
     console.log("Commands set successfully:", JSON.stringify(response.data));
   })
   .catch(function (error) {
-    console.error("Error setting commands:", error);
+    console.error("Error setting commands:", error.message);
   });

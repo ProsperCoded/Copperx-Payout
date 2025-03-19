@@ -4,7 +4,6 @@ import { welcomeMessage } from "../messages/start.messages";
 
 export async function handleStart(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
-
   await TelegramService.sendMessage(chatId, welcomeMessage, {
     inlineKeyboard: [
       [{ text: "🔐 Login to CopperX", callback_data: "login" }],

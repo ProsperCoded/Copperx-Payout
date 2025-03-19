@@ -1,4 +1,28 @@
-export interface TelegramMessage {
+export type TelegramBody = TelegramBodyWithCallback & TelegramBodyDirectMessage;
+
+export type TelegramBodyWithCallback = {
+  update_id: number;
+  callback_query: {
+    id: string;
+    from: {
+      id: number;
+      is_bot: boolean;
+      first_name: string;
+      username: string;
+      language_code: string;
+    };
+    message: TelegramMessage;
+    chat_instance: string;
+    data: string;
+  };
+};
+
+export type TelegramBodyDirectMessage = {
+  update_id: number;
+  message: TelegramMessage;
+};
+
+export type TelegramMessage = {
   message_id: number;
   from?: {
     id: number;
@@ -67,4 +91,4 @@ export interface TelegramMessage {
     text: string;
     callback_data: string;
   }[];
-}
+};

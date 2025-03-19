@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx src/server.ts",
-    "build": "npm run clean && npm run build-code && node run setupBot",
-    "setupBot": "tsx src/scripts/setWebhook.ts && tsx src/scripts/setCommands.ts",
+    "dev": "tsx --watch src/server.ts",
+    "build": "npm run clean && npm run build-code && node run setup",
+    "setup": "tsx src/scripts/setWebhook.ts && tsx src/scripts/setCommands.ts && mkdir -p logs ",
     "build-code": "tsc -p .",
     "clean": "rm -rf dist/"
   },

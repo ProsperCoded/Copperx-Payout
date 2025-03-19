@@ -4,7 +4,7 @@ import { Response, Request } from "express";
 import { LoggerService } from "../logger/logger.service";
 import { LoggerPaths } from "../../constants/logger-paths.enum";
 
-const logErrors = new LoggerService(LoggerPaths.WEBHOOK);
+const logErrors = new LoggerService(LoggerPaths.ERROR);
 export function errorHandler(
   error: BaseException,
   _req: Request,
@@ -15,7 +15,7 @@ export function errorHandler(
 
   const message = error.message || "Something went wrong";
 
-  logErrors.error(error.toString(), error.stack);
+  logErrors.error(error.toString());
   // sending 200 status code to avoid telegram from retrying the webhook
   res.status(200).send();
   next();

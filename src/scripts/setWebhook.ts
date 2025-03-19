@@ -5,7 +5,7 @@ import { ENV } from "../constants/env.enum";
 
 // ** Set the webhook for the telegram bot
 const botToken = configService.get(ENV.BOT_TOKEN);
-const webhookUrl = configService.get(ENV.SERVER_URL) + "/webhook";
+const webhookUrl = configService.get(ENV.SERVER_URL);
 
 axios(`https://api.telegram.org/bot${botToken}/setWebhook?url=${webhookUrl}`, {
   method: "post",
@@ -17,5 +17,5 @@ axios(`https://api.telegram.org/bot${botToken}/setWebhook?url=${webhookUrl}`, {
     console.log("Webhook set successfully:", JSON.stringify(response.data));
   })
   .catch(function (error) {
-    console.error("Error setting webhook:", error);
+    console.error("Error setting webhook:", error.message);
   });
