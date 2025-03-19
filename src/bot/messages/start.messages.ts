@@ -11,10 +11,7 @@ To get started, please log in to your CopperX account using the button below or 
 
 export const loginMessage = `
 🔐 Login to your CopperX account to get started.
-Enter your username and password in the following format(newline):
-<code>
-username \n
-password
-</code>
+Enter your email and an OTP will be sent to your email:
+<code>email@example.com</code>
 
 `;
