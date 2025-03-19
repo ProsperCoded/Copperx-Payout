@@ -4,7 +4,7 @@ import { configService } from "../utils/config";
 import { ENV } from "../constants/env.enum";
 import BotCommands from "../constants/bot-commands";
 
-// ** Set the commands for the telegram bot
+// ** Set the menu commands for the telegram bot
 const botToken = configService.get(ENV.BOT_TOKEN);
 
 axios(`https://api.telegram.org/bot${botToken}/setMyCommands`, {
