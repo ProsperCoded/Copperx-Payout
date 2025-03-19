@@ -3,7 +3,7 @@ import axios from "axios";
 import { configService } from "./utils/config";
 import { ENV } from "./constants/env.enum";
 const botToken = configService.get(ENV.TOKEN);
-const webhookUrl = configService.get(ENV.WEBHOOK_URL);
+const webhookUrl = configService.get(ENV.SERVER_URL) + "/webhook";
 
 axios(`https://api.telegram.org/bot${botToken}/setWebhook?url=${webhookUrl}`, {
   method: "post",
