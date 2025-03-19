@@ -2,7 +2,7 @@ import "dotenv/config";
 import axios from "axios";
 import { configService } from "../utils/config";
 import { ENV } from "../constants/env.enum";
-import BotCommands from "../constants/bot-commands";
+import { BotCommands } from "../constants/bot-commands";
 
 // ** Set the menu commands for the telegram bot
 const botToken = configService.get(ENV.BOT_TOKEN);
