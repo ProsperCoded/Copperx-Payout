@@ -10,4 +10,10 @@ export interface UserSession {
   state: UserState;
   email?: string;
   lastCommandAt: number;
+  authData?: {
+    sid?: string;
+    accessToken?: string;
+    accessTokenId?: string;
+    expireAt?: string;
+  };
 }
