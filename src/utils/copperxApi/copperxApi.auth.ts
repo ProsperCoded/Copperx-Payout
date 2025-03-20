@@ -1,5 +1,6 @@
 import { CopperxApiBase } from "./copperxApi";
 import { UserProfile } from "../../types/user.types";
+import { Kyc } from "../../types/kyc.types";
 export class CopperxApiAuthService extends CopperxApiBase {
   // Request an email OTP and return the session ID (sid)
   async requestEmailOtp(
@@ -55,6 +56,22 @@ export class CopperxApiAuthService extends CopperxApiBase {
       return response.data;
     } catch (error) {
       this.logger.error("Error fetching user profile", error.message);
+      throw error;
+    }
+  }
+
+  // kyc status
+  async getKycStatus(userId: string, accessToken: string): Promise<Kyc> {
+    try {
+      const response = await this.api.get(`/api/kycs/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      this.logger.info("Fetched KYC status", response.data);
+      return response.data;
+    } catch (error) {
+      this.logger.error("Error fetching KYC status", error.message);
       throw error;
     }
   }

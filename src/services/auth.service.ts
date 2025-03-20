@@ -71,9 +71,10 @@ export class AuthService {
         otp,
         session.authData.sid
       );
-      // Store authentication data in session
+      // Store authentication data in session including the userId
       await this.sessionService.updateSession(chatId, {
         state: UserState.AUTHENTICATED,
+        userId: authResult.user.id, // Store the user ID
         authData: {
           accessToken: authResult.accessToken,
           accessTokenId: authResult.accessTokenId,
@@ -120,5 +121,30 @@ export class AuthService {
       state: UserState.IDLE,
       authData: undefined,
     });
+  }
+
+  // Add a method to check KYC status
+  async checkKycStatus(chatId: number): Promise<Kyc | null> {
+    const session = await this.sessionService.getSession(chatId);
+    const accessToken = await this.getAccessToken(chatId);
+
+    if (!accessToken || !session.userId) {
+      return null;
+    }
+
+    try {
+      const kycStatus = await this.copperxAuthApi.getKycStatus(
+        session.userId,
+        accessToken
+      );
+      return kycStatus;
+    } catch (error) {
+      this.logger.error("Error checking KYC status", {
+        error: error.message,
+        userId: session.userId,
+        chatId,
+      });
+      return null;
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { TelegramService } from "../../utils/telegram/telegram.service";
 import { CallbackEnum } from "../../constants/callback.enum";
 import { TelegramMessage } from "../../types/webhook.types";
 import { loginHandler } from "../handlers/login.handler";
@@ -10,6 +11,8 @@ import {
   handleCreateWalletCallback,
 } from "../handlers/wallet.handler";
 
+// Remove the KYC-related callback handlers since we're using URL buttons now
+
 export const callbackOperations: Record<
   string,
   (msgObj: TelegramMessage, ...args: any[]) => Promise<void> | void
@@ -19,6 +22,7 @@ export const callbackOperations: Record<
   [CallbackEnum.WALLET_ALL_BALANCES]: handleAllBalancesCallback,
   [CallbackEnum.WALLET_BACK]: handleWalletBackCallback,
   [CallbackEnum.WALLET_CREATE]: handleCreateWalletCallback,
+  // Removed learn_kyc and complete_kyc handlers since they're now URL buttons
 };
 
 // Handle dynamic callbacks with parameters

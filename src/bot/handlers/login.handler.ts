@@ -55,12 +55,43 @@ export async function handleOtpInput(msgObj: TelegramMessage) {
 
   if (user) {
     logger.debug("User Profile", user);
-    await TelegramService.sendMessage(
-      chatId,
-      `✅ Login successful! Welcome, ${
-        user.firstName || user.email
-      }!\n\nYou can now use the following commands:\n• /wallet - Check your wallet balance\n• /send - Send funds to another user\n• /logout - Logout from your account`
-    );
+
+    // Check KYC status before proceeding
+    const kycStatus = await authService.checkKycStatus(chatId);
+
+    if (kycStatus && kycStatus.status === "verified") {
+      // KYC verified - proceed normally
+      await TelegramService.sendMessage(
+        chatId,
+        `✅ Login successful! Welcome, ${
+          user.firstName || user.email
+        }!\n\nYou can now use the following commands:\n• /wallet - Check your wallet balance\n• /send - Send funds to another user\n• /logout - Logout from your account`
+      );
+    } else {
+      // KYC not verified - prompt user to complete KYC with URL buttons
+      await TelegramService.sendMessage(
+        chatId,
+        `✅ Login successful! Welcome, ${
+          user.firstName || user.email
+        }!\n\n⚠️ Your account KYC is not verified. Please complete your KYC verification to use all features.`,
+        {
+          inlineKeyboard: [
+            [
+              {
+                text: "Learn how to complete KYC",
+                url: "https://copperx.io/blog/how-to-complete-your-kyc-and-kyb-at-copperx-payout",
+              },
+            ],
+            [
+              {
+                text: "Complete KYC now",
+                url: "https://copperx.io",
+              },
+            ],
+          ],
+        }
+      );
+    }
   }
 }
 
