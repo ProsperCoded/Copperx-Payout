@@ -4,6 +4,7 @@ import { handler } from "./bot/webhook";
 import { AppEnum } from "./constants/app.enum";
 import helmet from "helmet";
 import cors from "cors";
+import redisClient from "./utils/database";
 import { DOCUMENTATION_URL } from "./constants";
 import { errorHandler } from "./utils/middleware/errorHandler";
 import { LoggerService } from "./utils/logger/logger.service";

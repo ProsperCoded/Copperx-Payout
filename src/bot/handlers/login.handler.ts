@@ -8,16 +8,18 @@ import { logger } from "../webhook";
 const sessionService = SessionService.getInstance();
 const authService = AuthService.getInstance();
 
-export function loginHandler(msgObj: TelegramMessage) {
+export async function loginHandler(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
-  sessionService.updateSession(chatId, { state: UserState.AWAITING_EMAIL });
-  TelegramService.sendMessage(chatId, loginMessage);
+  await sessionService.updateSession(chatId, {
+    state: UserState.AWAITING_EMAIL,
+  });
+  await TelegramService.sendMessage(chatId, loginMessage);
 }
 
 export async function handleEmailInput(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
   const email = msgObj.text?.trim();
-  const session = sessionService.getSession(chatId);
+  const session = await sessionService.getSession(chatId);
 
   // Check if user is already in OTP input state
   if (session.state === UserState.AWAITING_OTP) {

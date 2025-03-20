@@ -22,7 +22,7 @@ const walletService = WalletService.getInstance();
 export async function handleWalletCommand(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
 
-  if (!authService.isAuthenticated(chatId)) {
+  if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
     return;
   }
@@ -83,7 +83,7 @@ export async function handleWalletDetailsCallback(
 ) {
   const chatId = msgObj.chat.id;
 
-  if (!authService.isAuthenticated(chatId)) {
+  if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
     return;
   }
@@ -168,7 +168,7 @@ export async function handleSetDefaultWalletCallback(
 ) {
   const chatId = msgObj.chat.id;
 
-  if (!authService.isAuthenticated(chatId)) {
+  if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
     return;
   }
@@ -223,7 +223,7 @@ export async function handleDepositCallback(
 ) {
   const chatId = msgObj.chat.id;
 
-  if (!authService.isAuthenticated(chatId)) {
+  if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
     return;
   }
@@ -278,7 +278,7 @@ export async function handleDepositCallback(
 export async function handleAllBalancesCallback(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
 
-  if (!authService.isAuthenticated(chatId)) {
+  if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
     return;
   }
@@ -324,7 +324,7 @@ export async function handleWalletBackCallback(msgObj: TelegramMessage) {
 export async function handleCreateWalletCallback(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
 
-  if (!authService.isAuthenticated(chatId)) {
+  if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
     return;
   }

@@ -30,7 +30,8 @@ export const handler: RequestHandler = async (req, res) => {
     } else if (req.body?.message) {
       const message = (req.body as TelegramBody).message;
       const chatId = message.chat.id;
-      const session = sessionService.getSession(chatId);
+      // Get session asynchronously
+      const session = await sessionService.getSession(chatId);
 
       // Handle command messages
       if (message.text?.startsWith("/")) {
@@ -46,7 +47,7 @@ export const handler: RequestHandler = async (req, res) => {
         }
 
         await commandOperations[command](message);
-        return res.status(200).send();
+        res.status(200).send();
       }
 
       // Handle text messages based on user state
