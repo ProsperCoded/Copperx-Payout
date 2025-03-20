@@ -105,6 +105,17 @@ export class AuthService {
     );
   }
 
+  async isKycVerified(chatId: number): Promise<boolean> {
+    const session = await this.sessionService.getSession(chatId);
+    return !!session.kycVerified;
+  }
+
+  async isAuthenticatedAndVerified(chatId: number): Promise<boolean> {
+    const isAuth = await this.isAuthenticated(chatId);
+    const isVerified = await this.isKycVerified(chatId);
+    return isAuth && isVerified;
+  }
+
   async getAccessToken(chatId: number): Promise<string | null> {
     const session = await this.sessionService.getSession(chatId);
     if (
@@ -119,6 +130,7 @@ export class AuthService {
   async logout(chatId: number): Promise<void> {
     await this.sessionService.updateSession(chatId, {
       state: UserState.IDLE,
+      kycVerified: false,
       authData: undefined,
     });
   }

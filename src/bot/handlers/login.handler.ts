@@ -58,8 +58,14 @@ export async function handleOtpInput(msgObj: TelegramMessage) {
 
     // Check KYC status before proceeding
     const kycStatus = await authService.checkKycStatus(chatId);
+    const kycVerified = kycStatus && kycStatus.status === "verified";
 
-    if (kycStatus && kycStatus.status === "verified") {
+    // Update session with KYC verification status
+    await sessionService.updateSession(chatId, {
+      kycVerified,
+    });
+
+    if (kycVerified) {
       // KYC verified - proceed normally
       await TelegramService.sendMessage(
         chatId,

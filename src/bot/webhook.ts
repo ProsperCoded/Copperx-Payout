@@ -1,22 +1,24 @@
 import { RequestHandler } from "express";
 import { InvalidRequestException } from "../utils/exceptions/invalid-request.exception";
-import { TelegramBody, TelegramMessage } from "../types/webhook.types";
+import { TelegramBody } from "../types/webhook.types";
 import { commandOperations } from "./operations/command.operations";
 import { LoggerService } from "../utils/logger/logger.service";
 import { LoggerPaths } from "../constants/logger-paths.enum";
 import { TelegramService } from "../utils/telegram/telegram.service";
 import { UnknownCommandMessage } from "./messages";
-import {
-  callbackOperations,
-  handleCallback,
-} from "./operations/callback.operations";
+import { handleCallback } from "./operations/callback.operations";
 import { SessionService } from "../utils/session/session.service";
 import { UserState } from "../types/session.types";
 import { handleEmailInput, handleOtpInput } from "./handlers/login.handler";
+import { AuthService } from "../services/auth.service";
+import { checkKycVerification } from "./utils/kyc-verification";
 
 export const logger = new LoggerService(LoggerPaths.WEBHOOK);
 const sessionService = SessionService.getInstance();
 
+// List of commands that don't require KYC verification
+const kycExemptCommands = ["start", "login", "help"];
+const authService = AuthService.getInstance();
 export const handler: RequestHandler = async (req, res) => {
   try {
     // callback button clicked
@@ -44,6 +46,18 @@ export const handler: RequestHandler = async (req, res) => {
             UnknownCommandMessage
           );
           throw new InvalidRequestException("Unknown command");
+        }
+
+        // Check if the command requires KYC verification
+        if (!kycExemptCommands.includes(command)) {
+          // If authenticated but not KYC verified
+          if (
+            (await authService.isAuthenticated(chatId)) &&
+            !(await checkKycVerification(chatId, "this command"))
+          ) {
+            res.status(200).send();
+            return;
+          }
         }
 
         await commandOperations[command](message);

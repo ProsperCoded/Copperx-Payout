@@ -9,7 +9,8 @@ export interface UserSession {
   chatId: number;
   state: UserState;
   email?: string;
-  userId?: string; // Add userId to store the authenticated user's ID
+  userId?: string;
+  kycVerified?: boolean; // Add KYC verification status
   lastCommandAt: number;
   authData?: {
     sid?: string;

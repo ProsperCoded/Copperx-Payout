@@ -4,6 +4,7 @@ import { AuthService } from "../../services/auth.service";
 import { WalletService } from "../../services/wallet.service";
 import { CallbackEnum } from "../../constants/callback.enum";
 import { logger } from "../webhook";
+import { checkKycVerification } from "../utils/kyc-verification";
 import {
   walletListHeaderMessage,
   walletDetailMessage,
@@ -24,6 +25,11 @@ export async function handleWalletCommand(msgObj: TelegramMessage) {
 
   if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
+    return;
+  }
+
+  // Check KYC verification
+  if (!(await checkKycVerification(chatId, "wallet features"))) {
     return;
   }
 
@@ -87,6 +93,11 @@ export async function handleWalletDetailsCallback(
 
   if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
+    return;
+  }
+
+  // Check KYC verification
+  if (!(await checkKycVerification(chatId, "wallet details"))) {
     return;
   }
 
@@ -175,6 +186,11 @@ export async function handleSetDefaultWalletCallback(
     return;
   }
 
+  // Check KYC verification
+  if (!(await checkKycVerification(chatId, "wallet settings"))) {
+    return;
+  }
+
   try {
     const wallets = await walletService.getUserWallets(chatId);
     if (!wallets) {
@@ -227,6 +243,11 @@ export async function handleDepositCallback(
 
   if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
+    return;
+  }
+
+  // Check KYC verification
+  if (!(await checkKycVerification(chatId, "deposit features"))) {
     return;
   }
 
@@ -285,6 +306,11 @@ export async function handleAllBalancesCallback(msgObj: TelegramMessage) {
     return;
   }
 
+  // Check KYC verification
+  if (!(await checkKycVerification(chatId, "balance information"))) {
+    return;
+  }
+
   try {
     const balances = await walletService.getAllWalletBalances(chatId);
     if (!balances || balances.length === 0) {
@@ -328,6 +354,11 @@ export async function handleCreateWalletCallback(msgObj: TelegramMessage) {
 
   if (!(await authService.isAuthenticated(chatId))) {
     await TelegramService.sendMessage(chatId, authRequiredMessage);
+    return;
+  }
+
+  // Check KYC verification
+  if (!(await checkKycVerification(chatId, "wallet creation"))) {
     return;
   }
 
