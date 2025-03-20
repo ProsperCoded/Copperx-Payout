@@ -106,7 +106,10 @@ export class AuthService {
 
   async getAccessToken(chatId: number): Promise<string | null> {
     const session = await this.sessionService.getSession(chatId);
-    if (await this.isAuthenticated(chatId)) {
+    if (
+      session.state === UserState.AUTHENTICATED &&
+      session.authData?.accessToken
+    ) {
       return session.authData.accessToken;
     }
     return null;

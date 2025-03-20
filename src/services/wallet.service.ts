@@ -3,19 +3,7 @@ import { AuthService } from "./auth.service";
 import { LoggerService } from "../utils/logger/logger.service";
 import { LoggerPaths } from "../constants/logger-paths.enum";
 import { TelegramService } from "../utils/telegram/telegram.service";
-
-export interface WalletInfo {
-  id: string;
-  address: string;
-  network: string;
-  isDefault: boolean;
-}
-
-export interface WalletBalance {
-  network: string;
-  balance: string;
-  token?: string;
-}
+import { Wallet, WalletBalance, WalletBalances } from "../types/wallet.types";
 
 export class WalletService {
   private static instance: WalletService;
@@ -32,8 +20,8 @@ export class WalletService {
     return this.instance;
   }
 
-  async getUserWallets(chatId: number): Promise<WalletInfo[] | null> {
-    const accessToken = this.authService.getAccessToken(chatId);
+  async getUserWallets(chatId: number): Promise<Wallet[] | null> {
+    const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return null;
     }
@@ -47,12 +35,7 @@ export class WalletService {
       // Get default wallet to compare
       const defaultWallet = await this.copperxWalletApi.getDefaultWallet();
 
-      return wallets.map((wallet) => ({
-        id: wallet.id,
-        address: wallet.address,
-        network: wallet.network,
-        isDefault: wallet.id === defaultWallet.id,
-      }));
+      return wallets;
     } catch (error) {
       this.logger.error("Error fetching user wallets", {
         error: error.message,
@@ -83,12 +66,9 @@ export class WalletService {
 
       const balanceData = await this.copperxWalletApi.getDefaultWalletBalance();
 
-      return {
-        network: balanceData.network,
-        balance: `${balanceData.balance} ${balanceData.symbol || ""}`,
-        token: balanceData.token,
-      };
+      return balanceData;
     } catch (error) {
+      console.log(error);
       this.logger.error("Error fetching wallet balance", {
         error: error.message,
         chatId,
@@ -149,7 +129,7 @@ export class WalletService {
   async generateWallet(
     chatId: number,
     network: string
-  ): Promise<WalletInfo | null> {
+  ): Promise<Wallet | null> {
     const accessToken = this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return null;

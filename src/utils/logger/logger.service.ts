@@ -51,6 +51,7 @@ export class LoggerService implements ILogger {
       {
         base: { label },
         timestamp: pino.stdTimeFunctions.isoTime,
+        level: "debug",
       },
       transport
     );

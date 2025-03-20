@@ -48,6 +48,7 @@ export const handler: RequestHandler = async (req, res) => {
 
         await commandOperations[command](message);
         res.status(200).send();
+        return;
       }
 
       // Handle text messages based on user state

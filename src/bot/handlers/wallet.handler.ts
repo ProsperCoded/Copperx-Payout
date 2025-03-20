@@ -51,7 +51,9 @@ async function displayWalletList(chatId: number) {
 
     const inlineKeyboard = wallets.map((wallet) => [
       {
-        text: `${wallet.network} ${wallet.isDefault ? "(Default)" : ""}`,
+        text: `${wallet.network} - ${wallet.walletType} ${
+          wallet.isDefault ? "(Default)" : ""
+        }`,
         callback_data: `${CallbackEnum.WALLET_DETAILS}:${wallet.id}`,
       },
     ]);
@@ -142,7 +144,7 @@ export async function handleWalletDetailsCallback(
       walletDetailMessage(
         selectedWallet.network,
         selectedWallet.id,
-        selectedWallet.address,
+        selectedWallet.walletAddress,
         balance.balance,
         selectedWallet.isDefault
       ),
@@ -248,7 +250,7 @@ export async function handleDepositCallback(
       chatId,
       depositInstructionsMessage(
         selectedWallet.network,
-        selectedWallet.address
+        selectedWallet.walletAddress
       ),
       {
         inlineKeyboard: [

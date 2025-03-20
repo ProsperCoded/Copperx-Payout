@@ -40,13 +40,17 @@ export class SessionService {
 
   public async getSession(chatId: number): Promise<UserSession> {
     try {
-      const sessionData = await redisClient.get(this.getRedisKey(chatId));
+      let key = this.getRedisKey(chatId);
+      const sessionData = await redisClient.get(key);
 
       if (!sessionData) {
         return this.createSession(chatId);
       }
-
-      return JSON.parse(sessionData);
+      let data = JSON.parse(sessionData);
+      // this.logger.info(`Retrieved session for key ${key}`, {
+      //   data,
+      // });
+      return data;
     } catch (error) {
       this.logger.error(`Error retrieving session for chat ${chatId}:`, error);
       // Fallback to creating a new session in case of errors

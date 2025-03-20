@@ -3,7 +3,7 @@ export type Wallet = {
   createdAt: string;
   updatedAt: string;
   organizationId: string;
-  walletType: "web3_auth_copperx";
+  walletType: "web3_auth_copperx" | "quantum";
   network: string;
   walletAddress: string;
   isDefault: boolean;
