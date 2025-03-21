@@ -23,11 +23,19 @@ What would you like to do with this wallet?
 `;
 
 export const walletBalancesMessage = (
-  balances: Array<{ network: string; balance: string }>
+  balances: Array<{ network: string; balance: string; address: string }>
 ) => `
 💰 <b>Your Wallet Balances</b>
 
-${balances.map((b) => `<b>${b.network}:</b> ${b.balance}`).join("\n")}
+${balances
+  .map(
+    (b) => `
+<b>Network:</b> ${b.network}
+<b>Balance:</b> ${b.balance}
+<b>Address:</b> <code>${b.address}</code>
+`
+  )
+  .join("\n")}
 `;
 
 export const depositInstructionsMessage = (

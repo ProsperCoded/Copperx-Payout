@@ -76,7 +76,7 @@ export class WalletService {
     }
   }
 
-  async getAllWalletBalances(chatId: number): Promise<WalletBalance[] | null> {
+  async getAllWalletBalances(chatId: number) {
     const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return null;
@@ -88,8 +88,10 @@ export class WalletService {
 
       return balances.map((balance) => ({
         network: balance.network,
-        balance: `${balance.balance} ${balance.symbol || ""}`,
-        token: balance.token,
+        balance: `${balance.balances[0].balance} ${
+          balance.balances[0].symbol || ""
+        }`,
+        address: balance.balances[0].address,
       }));
     } catch (error) {
       this.logger.error("Error fetching all wallet balances", {

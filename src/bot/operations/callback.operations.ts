@@ -1,4 +1,3 @@
-import { TelegramService } from "../../utils/telegram/telegram.service";
 import { CallbackEnum } from "../../constants/callback.enum";
 import { TelegramMessage } from "../../types/webhook.types";
 import { loginHandler } from "../handlers/login.handler";
