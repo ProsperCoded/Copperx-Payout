@@ -63,13 +63,21 @@ export class CopperxApiAuthService extends CopperxApiBase {
   // kyc status
   async getKycStatus(userId: string, accessToken: string): Promise<Kyc> {
     try {
-      const response = await this.api.get(`/api/kycs/${userId}`, {
+      const response = await this.api.get<{
+        page: number;
+        limit: number;
+        count: number;
+        hasMore: boolean;
+        data: Kyc[];
+      }>(`/api/kycs`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
       this.logger.info("Fetched KYC status", response.data);
-      return response.data;
+      // get last kyc verification
+      const kycStatus = response.data.data[response.data.data.length - 1];
+      return kycStatus;
     } catch (error) {
       this.logger.error("Error fetching KYC status", error.message);
       throw error;

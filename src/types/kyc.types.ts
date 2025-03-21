@@ -3,7 +3,7 @@ export type Kyc = {
   createdAt: string;
   updatedAt: string;
   organizationId: string;
-  status: string;
+  status: "approved" | "pending" | "rejected";
   type: string;
   country: string;
   providerCode: string;

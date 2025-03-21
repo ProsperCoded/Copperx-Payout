@@ -7,4 +7,5 @@ export enum CallbackEnum {
   WALLET_BACK = "wallet_back",
   WALLET_ALL_BALANCES = "wallet_all_balances",
   WALLET_CREATE = "wallet_create",
+  CHECK_VERIFICATION = "check_verification", // Add this new callback
 }

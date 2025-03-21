@@ -20,6 +20,14 @@ export class WalletService {
     return this.instance;
   }
 
+  /**
+   * Set the access token for the wallet API
+   * @param accessToken The user's access token
+   */
+  private setAccessToken(accessToken: string): void {
+    this.copperxWalletApi.setAccessToken(accessToken);
+  }
+
   async getUserWallets(chatId: number): Promise<Wallet[] | null> {
     const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
@@ -27,14 +35,8 @@ export class WalletService {
     }
 
     try {
-      this.copperxWalletApi.api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
+      this.setAccessToken(accessToken);
       const wallets = await this.copperxWalletApi.getOrganizationWallets();
-
-      // Get default wallet to compare
-      const defaultWallet = await this.copperxWalletApi.getDefaultWallet();
-
       return wallets;
     } catch (error) {
       this.logger.error("Error fetching user wallets", {
@@ -49,15 +51,13 @@ export class WalletService {
     chatId: number,
     walletId?: string
   ): Promise<WalletBalance | null> {
-    const accessToken = this.authService.getAccessToken(chatId);
+    const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return null;
     }
 
     try {
-      this.copperxWalletApi.api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
+      this.setAccessToken(accessToken);
 
       if (walletId) {
         // If a specific walletId is provided, first set it as the default
@@ -65,10 +65,8 @@ export class WalletService {
       }
 
       const balanceData = await this.copperxWalletApi.getDefaultWalletBalance();
-
       return balanceData;
     } catch (error) {
-      console.log(error);
       this.logger.error("Error fetching wallet balance", {
         error: error.message,
         chatId,
@@ -79,15 +77,13 @@ export class WalletService {
   }
 
   async getAllWalletBalances(chatId: number): Promise<WalletBalance[] | null> {
-    const accessToken = this.authService.getAccessToken(chatId);
+    const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return null;
     }
 
     try {
-      this.copperxWalletApi.api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
+      this.setAccessToken(accessToken);
       const balances = await this.copperxWalletApi.getAllWalletBalances();
 
       return balances.map((balance) => ({
@@ -105,15 +101,13 @@ export class WalletService {
   }
 
   async setDefaultWallet(chatId: number, walletId: string): Promise<boolean> {
-    const accessToken = this.authService.getAccessToken(chatId);
+    const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return false;
     }
 
     try {
-      this.copperxWalletApi.api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
+      this.setAccessToken(accessToken);
       await this.copperxWalletApi.setDefaultWallet(walletId);
       return true;
     } catch (error) {
@@ -130,22 +124,24 @@ export class WalletService {
     chatId: number,
     network: string
   ): Promise<Wallet | null> {
-    const accessToken = this.authService.getAccessToken(chatId);
+    const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return null;
     }
 
     try {
-      this.copperxWalletApi.api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
+      this.setAccessToken(accessToken);
       const wallet = await this.copperxWalletApi.generateOrGetWallet(network);
 
       return {
         id: wallet.id,
-        address: wallet.address,
+        createdAt: wallet.createdAt,
+        updatedAt: wallet.updatedAt,
+        organizationId: wallet.organizationId,
+        walletType: wallet.walletType,
         network: wallet.network,
-        isDefault: false, // Newly created wallet is not default by default
+        walletAddress: wallet.walletAddress,
+        isDefault: wallet.isDefault,
       };
     } catch (error) {
       this.logger.error("Error generating wallet", {
@@ -158,15 +154,13 @@ export class WalletService {
   }
 
   async getSupportedNetworks(chatId: number): Promise<string[] | null> {
-    const accessToken = this.authService.getAccessToken(chatId);
+    const accessToken = await this.authService.getAccessToken(chatId);
     if (!accessToken) {
       return null;
     }
 
     try {
-      this.copperxWalletApi.api.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
+      this.setAccessToken(accessToken);
       const networks = await this.copperxWalletApi.getSupportedNetworks();
       return networks;
     } catch (error) {

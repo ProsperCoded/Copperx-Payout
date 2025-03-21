@@ -6,6 +6,14 @@ import {
 import { CopperxApiBase } from "./copperxApi";
 
 export class CopperxApiWalletService extends CopperxApiBase {
+  /**
+   * Sets the authorization token for API requests
+   * @param accessToken User's access token
+   */
+  setAccessToken(accessToken: string): void {
+    this.api.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
+  }
+
   async getOrganizationWallets(): Promise<Wallet[]> {
     try {
       const response = await this.api.get("/api/wallets");
@@ -78,31 +86,13 @@ export class CopperxApiWalletService extends CopperxApiBase {
     }
   }
 
-  // async getSupportedNetworks() {
-  //   try {
-  //     const response = await this.api.get("/api/wallets/networks");
-  //     this.logger.info("Fetched supported networks", response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     this.logger.error("Error fetching supported networks", error.message);
-  //     throw error;
-  //   }
-  // }
-
-  // async getTokenBalance(chainId: string, token: string) {
-  //   try {
-  //     const response = await this.api.get(
-  //       `/api/wallets/${chainId}/tokens/${token}/balance`
-  //     );
-  //     this.logger.info(
-  //       "Fetched token balance",
-  //       { chainId, token },
-  //       response.data
-  //     );
-  //     return response.data;
-  //   } catch (error) {
-  //     this.logger.error("Error fetching token balance", error.message);
-  //     throw error;
-  //   }
-  // }
+  async getSupportedNetworks(): Promise<string[]> {
+    try {
+      // Mock implementation until API endpoint is available
+      return ["ethereum", "polygon", "bitcoin", "solana"];
+    } catch (error) {
+      this.logger.error("Error fetching supported networks", error.message);
+      throw error;
+    }
+  }
 }

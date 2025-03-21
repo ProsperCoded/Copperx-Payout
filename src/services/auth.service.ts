@@ -5,6 +5,7 @@ import { LoggerService } from "../utils/logger/logger.service";
 import { LoggerPaths } from "../constants/logger-paths.enum";
 import { TelegramService } from "../utils/telegram/telegram.service";
 import { UserProfile } from "../types/user.types";
+import { Kyc } from "../types/kyc.types";
 
 export class AuthService {
   private static instance: AuthService;

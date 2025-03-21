@@ -10,6 +10,7 @@ import {
   handleWalletBackCallback,
   handleCreateWalletCallback,
 } from "../handlers/wallet.handler";
+import { handleCheckVerification } from "../handlers/check-verification.handler";
 
 // Remove the KYC-related callback handlers since we're using URL buttons now
 
@@ -22,6 +23,7 @@ export const callbackOperations: Record<
   [CallbackEnum.WALLET_ALL_BALANCES]: handleAllBalancesCallback,
   [CallbackEnum.WALLET_BACK]: handleWalletBackCallback,
   [CallbackEnum.WALLET_CREATE]: handleCreateWalletCallback,
+  [CallbackEnum.CHECK_VERIFICATION]: handleCheckVerification, // Add the check verification handler
   // Removed learn_kyc and complete_kyc handlers since they're now URL buttons
 };
 
