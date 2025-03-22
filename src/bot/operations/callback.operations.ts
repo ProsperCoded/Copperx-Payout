@@ -10,6 +10,18 @@ import {
   handleCreateWalletCallback,
 } from "../handlers/wallet.handler";
 import { handleCheckVerification } from "../handlers/check-verification.handler";
+import {
+  handleTransferListCallback,
+  handleTransferDetailsCallback,
+  handleSendTransferCallback,
+  handleSendByEmailCallback,
+  handleSendByWalletCallback,
+  handleSendConfirmCallback,
+  handleSendCancelCallback,
+  handleTransferBackCallback,
+  handleCurrencyCallback,
+  handlePurposeCallback,
+} from "../handlers/transfer.handler";
 
 // Remove the KYC-related callback handlers since we're using URL buttons now
 
@@ -24,6 +36,15 @@ export const callbackOperations: Record<
   [CallbackEnum.WALLET_CREATE]: handleCreateWalletCallback,
   [CallbackEnum.CHECK_VERIFICATION]: handleCheckVerification, // Add the check verification handler
   // Removed learn_kyc and complete_kyc handlers since they're now URL buttons
+
+  // Transfer-related operations
+  [CallbackEnum.TRANSFER_LIST]: handleTransferListCallback,
+  [CallbackEnum.TRANSFER_SEND]: handleSendTransferCallback,
+  [CallbackEnum.TRANSFER_BACK]: handleTransferBackCallback,
+  [CallbackEnum.SEND_BY_EMAIL]: handleSendByEmailCallback,
+  [CallbackEnum.SEND_BY_WALLET]: handleSendByWalletCallback,
+  [CallbackEnum.SEND_CONFIRM]: handleSendConfirmCallback,
+  [CallbackEnum.SEND_CANCEL]: handleSendCancelCallback,
 };
 
 // Handle dynamic callbacks with parameters
@@ -44,6 +65,26 @@ export const handleCallback = async (
 
   if (baseCallback === CallbackEnum.WALLET_DEPOSIT) {
     return handleDepositCallback(message, params[0]);
+  }
+
+  if (baseCallback === CallbackEnum.TRANSFER_DETAILS) {
+    return handleTransferDetailsCallback(message, params[0]);
+  }
+
+  if (baseCallback === CallbackEnum.TRANSFER_NEXT_PAGE) {
+    return handleTransferListCallback(message, parseInt(params[0]));
+  }
+
+  if (baseCallback === CallbackEnum.TRANSFER_PREV_PAGE) {
+    return handleTransferListCallback(message, parseInt(params[0]));
+  }
+
+  if (baseCallback === "transfer_currency") {
+    return handleCurrencyCallback(message, params[0]);
+  }
+
+  if (baseCallback === "transfer_purpose") {
+    return handlePurposeCallback(message, params[0]);
   }
 
   // If it's a standard callback without parameters

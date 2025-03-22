@@ -4,6 +4,10 @@ import { startHandler } from "./../handlers/start.handler";
 import { loginHandler } from "../handlers/login.handler";
 import { handleWalletCommand } from "../handlers/wallet.handler";
 import { handleLogout } from "../handlers/logout.handler";
+import {
+  handleTransferCommand,
+  handleSendCommand,
+} from "../handlers/transfer.handler";
 
 export const commandOperations: {
   [key in CommandsEnum]: (msgObj: TelegramMessage) => Promise<void> | void;
@@ -11,7 +15,8 @@ export const commandOperations: {
   [CommandsEnum.START]: startHandler,
   [CommandsEnum.LOGIN]: loginHandler,
   [CommandsEnum.WALLET]: handleWalletCommand,
-  [CommandsEnum.SEND]: (msgObj) => {},
+  [CommandsEnum.TRANSFER]: handleTransferCommand,
+  [CommandsEnum.SEND]: handleSendCommand,
   [CommandsEnum.LOGOUT]: handleLogout,
   [CommandsEnum.HELP]: (msgObj) => {},
 };

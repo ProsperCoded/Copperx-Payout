@@ -1,7 +1,7 @@
 export const walletListHeaderMessage = `
 🏦 <b>Your CopperX Wallets</b>
 
-Select a wallet to view its details:
+Select a wallet to set as Default and view its details:
 `;
 
 export const walletDetailMessage = (

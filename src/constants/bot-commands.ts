@@ -2,6 +2,7 @@ enum CommandsEnum {
   START = "start",
   LOGIN = "login",
   WALLET = "wallet",
+  TRANSFER = "transfer", // Add transfer command
   SEND = "send",
   LOGOUT = "logout",
   HELP = "help",
@@ -22,8 +23,12 @@ export const BotCommands: Array<{
     description: "Manage your wallet (view balance)",
   },
   {
+    command: CommandsEnum.TRANSFER,
+    description: "View and manage transfers",
+  },
+  {
     command: CommandsEnum.SEND,
-    description: "Manage your wallet (send funds)",
+    description: "Send funds to another user",
   },
   {
     command: CommandsEnum.LOGOUT,

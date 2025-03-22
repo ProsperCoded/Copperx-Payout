@@ -11,7 +11,7 @@ const authService = AuthService.getInstance();
 export async function loginHandler(msgObj: TelegramMessage) {
   const chatId = msgObj.chat.id;
   await sessionService.updateSession(chatId, {
-    state: UserState.AWAITING_EMAIL,
+    state: UserState.AWAITING_LOGIN_EMAIL,
   });
   await TelegramService.sendMessage(chatId, loginMessage);
 }

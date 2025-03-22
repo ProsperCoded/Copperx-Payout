@@ -12,6 +12,7 @@ import { UserState } from "../types/session.types";
 import { handleEmailInput, handleOtpInput } from "./handlers/login.handler";
 import { AuthService } from "../services/auth.service";
 import { checkKycVerification } from "./utils/kyc-verification";
+import { handleAmountInput, handleRecipientInput } from "./handlers/transfer.handler";
 
 export const logger = new LoggerService(LoggerPaths.WEBHOOK);
 const sessionService = SessionService.getInstance();
@@ -67,11 +68,20 @@ export const handler: RequestHandler = async (req, res) => {
 
       // Handle text messages based on user state
       switch (session.state) {
-        case UserState.AWAITING_EMAIL:
+        case UserState.AWAITING_LOGIN_EMAIL:
           await handleEmailInput(message);
+          break;
+        case UserState.AWAITING_RECIPIENT_EMAIL:
+          await handleRecipientInput(message);
           break;
         case UserState.AWAITING_OTP:
           await handleOtpInput(message);
+          break;
+        case UserState.AWAITING_WALLET_ADDRESS:
+          await handleRecipientInput(message);
+          break;
+        case UserState.AWAITING_AMOUNT:
+          await handleAmountInput(message);
           break;
         default:
           // Handle unexpected messages

@@ -100,7 +100,6 @@ export class AuthService {
   async isAuthenticated(chatId: number): Promise<boolean> {
     const session = await this.sessionService.getSession(chatId);
     return (
-      session.state === UserState.AUTHENTICATED &&
       !!session.authData?.accessToken &&
       new Date(session.authData.expireAt) > new Date()
     );
@@ -119,13 +118,7 @@ export class AuthService {
 
   async getAccessToken(chatId: number): Promise<string | null> {
     const session = await this.sessionService.getSession(chatId);
-    if (
-      session.state === UserState.AUTHENTICATED &&
-      session.authData?.accessToken
-    ) {
-      return session.authData.accessToken;
-    }
-    return null;
+    return session.authData?.accessToken || null;
   }
 
   async logout(chatId: number): Promise<void> {
