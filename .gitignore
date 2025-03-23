@@ -32,4 +32,3 @@ webpack.config.js
 # Babel files
 .babelrc
 temp/
-docs/
