@@ -16,8 +16,13 @@ export interface UserSession {
   state: UserState;
   email?: string;
   userId?: string;
+  organizationId?: string;
   kycVerified?: boolean;
   lastCommandAt: number;
+  rateLimitData?: {
+    requestCount: number;
+    lastResetTime: number;
+  };
   transferData?: {
     method?: "email" | "wallet";
     email?: string;

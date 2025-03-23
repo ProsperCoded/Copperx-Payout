@@ -12,6 +12,9 @@ export type InlineKeyboardButton = {
 
 export type ReplyKeyboardButton = {
   text: string;
+  web_app?: {
+    url: string;
+  };
 };
 
 export class TelegramService {

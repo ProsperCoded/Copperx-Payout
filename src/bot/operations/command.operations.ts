@@ -8,6 +8,7 @@ import {
   handleTransferCommand,
   handleSendCommand,
 } from "../handlers/transfer.handler";
+import { handleHelpCommand } from "../handlers/help.handler";
 
 export const commandOperations: {
   [key in CommandsEnum]: (msgObj: TelegramMessage) => Promise<void> | void;
@@ -18,5 +19,5 @@ export const commandOperations: {
   [CommandsEnum.TRANSFER]: handleTransferCommand,
   [CommandsEnum.SEND]: handleSendCommand,
   [CommandsEnum.LOGOUT]: handleLogout,
-  [CommandsEnum.HELP]: (msgObj) => {},
+  [CommandsEnum.HELP]: handleHelpCommand,
 };

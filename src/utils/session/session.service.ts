@@ -26,6 +26,10 @@ export class SessionService {
       chatId,
       state: UserState.IDLE,
       lastCommandAt: Date.now(),
+      rateLimitData: {
+        requestCount: 0,
+        lastResetTime: Date.now(),
+      },
     };
 
     try {
@@ -47,9 +51,6 @@ export class SessionService {
         return this.createSession(chatId);
       }
       let data = JSON.parse(sessionData);
-      // this.logger.info(`Retrieved session for key ${key}`, {
-      //   data,
-      // });
       return data;
     } catch (error) {
       this.logger.error(`Error retrieving session for chat ${chatId}:`, error);
@@ -112,6 +113,36 @@ export class SessionService {
         error
       );
       throw error;
+    }
+  }
+
+  /**
+   * Get all active sessions from Redis
+   * This is used for initializing notifications for all users
+   */
+  public async getAllSessions(): Promise<UserSession[]> {
+    try {
+      // Get all keys matching the session pattern
+      const keys = await redisClient.keys(`${this.keyPrefix}*`);
+      if (!keys || keys.length === 0) {
+        return [];
+      }
+
+      // Fetch all sessions in parallel
+      const sessionsData = await Promise.all(
+        keys.map((key) => redisClient.get(key))
+      );
+
+      // Parse and filter valid sessions
+      const sessions = sessionsData
+        .filter((data) => !!data)
+        .map((data) => JSON.parse(data as string))
+        .filter((session) => !!session);
+
+      return sessions;
+    } catch (error) {
+      this.logger.error(`Error retrieving all sessions:`, error);
+      return [];
     }
   }
 }

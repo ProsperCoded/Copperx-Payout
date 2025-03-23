@@ -6,12 +6,14 @@ import { LoggerPaths } from "../constants/logger-paths.enum";
 import { TelegramService } from "../utils/telegram/telegram.service";
 import { UserProfile } from "../types/user.types";
 import { Kyc } from "../types/kyc.types";
+import { NotificationService } from "./notification.service";
 
 export class AuthService {
   private static instance: AuthService;
   private sessionService = SessionService.getInstance();
   private copperxAuthApi = new CopperxApiAuthService();
   private logger = new LoggerService(LoggerPaths.APP);
+  private notificationService = NotificationService.getInstance();
 
   private constructor() {}
 
@@ -72,16 +74,26 @@ export class AuthService {
         otp,
         session.authData.sid
       );
-      // Store authentication data in session including the userId
+
+      // Store authentication data in session including the userId and organizationId
       await this.sessionService.updateSession(chatId, {
         state: UserState.AUTHENTICATED,
-        userId: authResult.user.id, // Store the user ID
+        userId: authResult.user.id,
+        organizationId: authResult.user.organizationId, // Store organization ID
         authData: {
           accessToken: authResult.accessToken,
           accessTokenId: authResult.accessTokenId,
           expireAt: authResult.expireAt,
         },
       });
+
+      // Initialize notifications for this user
+      await this.notificationService.initializePusher(
+        chatId,
+        authResult.user.organizationId,
+        authResult.accessToken
+      );
+
       return authResult.user;
     } catch (error) {
       this.logger.error("OTP verification failed", {
@@ -122,9 +134,17 @@ export class AuthService {
   }
 
   async logout(chatId: number): Promise<void> {
+    const session = await this.sessionService.getSession(chatId);
+
+    // Unsubscribe from notifications if organization ID exists
+    if (session.organizationId) {
+      this.notificationService.unsubscribe(session.organizationId);
+    }
+
     await this.sessionService.updateSession(chatId, {
       state: UserState.IDLE,
       kycVerified: false,
+      organizationId: undefined,
       authData: undefined,
     });
   }

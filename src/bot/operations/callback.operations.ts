@@ -22,15 +22,14 @@ import {
   handleCurrencyCallback,
   handlePurposeCallback,
 } from "../handlers/transfer.handler";
-
-// Remove the KYC-related callback handlers since we're using URL buttons now
+import { handleHelpCommand } from "../handlers/help.handler";
 
 export const callbackOperations: Record<
   string,
   (msgObj: TelegramMessage, ...args: any[]) => Promise<void> | void
 > = {
   [CallbackEnum.LOGIN]: loginHandler,
-  [CallbackEnum.HELP]: (msgObj: TelegramMessage) => {},
+  [CallbackEnum.HELP]: handleHelpCommand, // Updated to use our dedicated handler
   [CallbackEnum.WALLET_ALL_BALANCES]: handleAllBalancesCallback,
   [CallbackEnum.WALLET_BACK]: handleWalletBackCallback,
   [CallbackEnum.WALLET_CREATE]: handleCreateWalletCallback,

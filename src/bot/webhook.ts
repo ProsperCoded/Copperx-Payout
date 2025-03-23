@@ -12,16 +12,51 @@ import { UserState } from "../types/session.types";
 import { handleEmailInput, handleOtpInput } from "./handlers/login.handler";
 import { AuthService } from "../services/auth.service";
 import { checkKycVerification } from "./utils/kyc-verification";
-import { handleAmountInput, handleRecipientInput } from "./handlers/transfer.handler";
+import {
+  handleAmountInput,
+  handleRecipientInput,
+} from "./handlers/transfer.handler";
+import { RateLimitService } from "../utils/rate-limit/rate-limit.service";
+import { rateLimitExceededMessage } from "./messages/error.messages";
 
 export const logger = new LoggerService(LoggerPaths.WEBHOOK);
 const sessionService = SessionService.getInstance();
+const rateLimitService = RateLimitService.getInstance();
 
 // List of commands that don't require KYC verification
 const kycExemptCommands = ["start", "login", "help"];
 const authService = AuthService.getInstance();
 export const handler: RequestHandler = async (req, res) => {
   try {
+    let chatId: number | undefined;
+
+    // Extract the chatId from the request
+    if (req.body?.callback_query) {
+      chatId = req.body.callback_query.message.chat.id;
+    } else if (req.body?.message) {
+      chatId = req.body.message.chat.id;
+    }
+
+    // If we have a chatId, check for rate limiting
+    if (chatId) {
+      const rateLimit = await rateLimitService.checkRateLimit(chatId);
+
+      if (rateLimit.isLimited) {
+        logger.warn(`Rate limit exceeded for chat ${chatId}`);
+
+        // Send rate limit message to the user
+        if (rateLimit.remainingSeconds) {
+          await TelegramService.sendMessage(
+            chatId,
+            rateLimitExceededMessage(rateLimit.remainingSeconds)
+          );
+        }
+
+        res.status(200).send();
+        return;
+      }
+    }
+
     // callback button clicked
     if (req.body?.callback_query) {
       const callbackQuery = (req.body as TelegramBody).callback_query;
