@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx --watch src/server.ts",
-    "build": "npm run clean && npm run build-code && node run setup",
+    "build": "npm run clean && npm run build-code && npm run setup",
     "setup": "tsx src/scripts/setWebhook.ts && tsx src/scripts/setCommands.ts && mkdir -p logs ",
     "build-code": "tsc -p .",
     "clean": "rm -rf dist/",
