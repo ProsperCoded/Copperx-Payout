@@ -1,5 +1,3 @@
-import { BotCommands, CommandsEnum } from "../../constants/bot-commands";
-
 export const helpMessage = `
 📚 <b>CopperX Payout Bot - Help Guide</b>
 
