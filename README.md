@@ -4,6 +4,13 @@
 
 A powerful Telegram bot for managing CopperX cryptocurrency transactions, wallet operations, and user authentication. This bot enables seamless cryptocurrency transfers and wallet management through a convenient Telegram interface.
 
+Official Docs: [docs](https://zsjwtqvlt5.apidog.io "docs on api dog")
+
+## Bot Access
+
+- **Bot Username**: [@buildminds_copperx_payout_bot](https://t.me/buildminds_copperx_payout_bot)
+- **Direct Link**: [https://t.me/buildminds_copperx_payout_bot](https://t.me/buildminds_copperx_payout_bot)
+
 ## Built and Maintained by Buildminds
 
 **Lead Developer**: [Prosper Enwerem (ProsperCoded)](https://github.com/prospercoded)
@@ -39,10 +46,6 @@ Comprehensive documentation is available in the `/docs` folder:
 - **Redis**: Session management and rate limiting
 - **Pusher**: Real-time notifications
 - **Railway**: Deployment platform
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ## 📞 Contact
 
